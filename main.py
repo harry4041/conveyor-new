@@ -39,27 +39,27 @@ class Factory():
             print(belt)
             conveyor_position = 0
             for worker_1, worker_2 in zip(w[::2], w[1::2]):  # Get every 2 workers and name then x and y
-                if worker_1.inventory == "ProdA":  # If the worker is holding "Prod A"
-                    if belt[conveyor_position] == "ProdA" or belt[conveyor_position] == "Prod0" or belt[
-                        conveyor_position] == "ProdF":  # but the worker cant pick it up, let the opposite worker have a look
+                if worker_1.inventory == "PartA":  # If the worker is holding "Prod A"
+                    if belt[conveyor_position] == "PartA" or belt[conveyor_position] == "Nothing" or belt[
+                        conveyor_position] == "Finished Product":  # but the worker cant pick it up, let the opposite worker have a look
                         worker_1.worker_2_turn(worker_2, conveyor_position, belt)
                     else:  # otherwise create "Prod F"
-                        worker_1.inventory = "ProdF"
-                        belt[conveyor_position] = "Prod0"
-                elif worker_1.inventory == "ProdB":  # Same as above but if holding B
-                    if belt[conveyor_position] == "ProdB" or belt[conveyor_position] == "Prod0" or belt[conveyor_position] == "ProdF":
+                        worker_1.inventory = "Finished Product"
+                        belt[conveyor_position] = "Nothing"
+                elif worker_1.inventory == "PartB":  # Same as above but if holding B
+                    if belt[conveyor_position] == "PartB" or belt[conveyor_position] == "Nothing" or belt[conveyor_position] == "Finished Product":
                         worker_1.worker_2_turn(worker_2, conveyor_position, belt)
                     else:
-                        worker_1.inventory = "ProdF"
-                        belt[conveyor_position] = "Prod0"
-                elif worker_1.inventory == "Prod0":  # If the workers hands are empty
-                    if belt[conveyor_position] != "Prod0" or belt[conveyor_position] != "ProdF":
+                        worker_1.inventory = "Finished Product"
+                        belt[conveyor_position] = "Nothing"
+                elif worker_1.inventory == "Nothing":  # If the workers hands are empty
+                    if belt[conveyor_position] != "Nothing" or belt[conveyor_position] != "Finished Product":
                         worker_1.inventory = belt[conveyor_position]
-                        belt[conveyor_position] = "Prod0"
-                elif worker_1.inventory == "ProdF":  # If the worker is holding a finished product
-                    if belt[conveyor_position] == "Prod0":
-                        worker_1.inventory = "Prod0"
-                        belt[conveyor_position] = "ProdF"
+                        belt[conveyor_position] = "Nothing"
+                elif worker_1.inventory == "Finished Product":  # If the worker is holding a finished product
+                    if belt[conveyor_position] == "Nothing":
+                        worker_1.inventory = "Nothing"
+                        belt[conveyor_position] = "Finished Product"
                 conveyor_position = conveyor_position + 1  # Move on to the next conveyor position
 
             # Display what the workers are holding on each tick for readability
@@ -87,30 +87,30 @@ class Belt:
 
 class Worker:
     def __init__(self, name):
-        self.inventory = "Prod0"
+        self.inventory = "Nothing"
         self.name = name
 
     def worker_2_turn(self, worker, z, belt):
-        if worker.inventory == "ProdA":
-            if belt[z] == "ProdA" or belt[z] == "Prod0" or belt[z] == "ProdF":
+        if worker.inventory == "PartA":
+            if belt[z] == "PartA" or belt[z] == "Nothing" or belt[z] == "Finished Product":
                 pass
             else:
-                worker.inventory = "ProdF"
-                belt[z] = "Prod0"
-        elif worker.inventory == "ProdB":
-            if belt[z] == "ProdB" or belt[z] == "Prod0" or belt[z] == "ProdF":
+                worker.inventory = "Finished Product"
+                belt[z] = "Nothing"
+        elif worker.inventory == "PartB":
+            if belt[z] == "PartB" or belt[z] == "Nothing" or belt[z] == "Finished Product":
                 pass
             else:
-                worker.inventory = "ProdF"
-                belt[z] = "Prod0"
-        elif worker.inventory == "Prod0":
-            if belt[z] != "Prod0" or belt[z] != "ProdF":
+                worker.inventory = "Finished Product"
+                belt[z] = "Nothing"
+        elif worker.inventory == "Nothing":
+            if belt[z] != "Nothing" or belt[z] != "Finished Product":
                 worker.inventory = belt[z]
-                belt[z] = "Prod0"
-        elif worker.inventory == "ProdF":
-            if belt[z] == "Prod0":
-                worker.inventory = "Prod0"
-                belt[z] = "ProdF"
+                belt[z] = "Nothing"
+        elif worker.inventory == "Finished Product":
+            if belt[z] == "Nothing":
+                worker.inventory = "Nothing"
+                belt[z] = "Finished Product"
 
 
 class Product:
@@ -118,7 +118,7 @@ class Product:
         self.name = self.random_product()
 
     def random_product(self):
-        prods = ["ProdA", "ProdB", "Prod0"]
+        prods = ["PartA", "PartB", "Nothing"]
         x = random.randint(0, 2)
         return prods[x]
 
